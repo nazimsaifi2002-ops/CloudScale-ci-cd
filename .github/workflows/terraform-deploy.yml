@@ -36,7 +36,22 @@ jobs:
       - name: Init
         run: terraform init -input=false
 
-      - name: Apply
+      - name: Create only the ECR repo
+        if: ${{ inputs.action == 'apply' }}
+        run: terraform apply -target=aws_ecr_repository.app -auto-approve -input=false
+
+      - name: Log in to ECR
+        if: ${{ inputs.action == 'apply' }}
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push the image
+        if: ${{ inputs.action == 'apply' }}
+        run: |
+          docker build -t ${{ steps.ecr.outputs.registry }}/cloudscale-app:v1 ./app
+          docker push ${{ steps.ecr.outputs.registry }}/cloudscale-app:v1
+
+      - name: Apply everything
         if: ${{ inputs.action == 'apply' }}
         run: terraform apply -auto-approve -input=false
 

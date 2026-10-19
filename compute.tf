@@ -34,11 +34,16 @@ resource "aws_launch_template" "web" {
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.web.id]
 
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ec2_ecr.name
+  }
+
   user_data = base64encode(<<-EOF
     #!/bin/bash
-    dnf install -y httpd
-    echo "Hello from $(hostname)" > /var/www/html/index.html
-    systemctl enable --now httpd
+    dnf install -y docker
+    systemctl enable --now docker
+    aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${split("/", aws_ecr_repository.app.repository_url)[0]}
+    docker run -d --restart always -p 80:5000 ${aws_ecr_repository.app.repository_url}:v1
   EOF
   )
 
