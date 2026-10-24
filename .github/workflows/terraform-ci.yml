@@ -39,3 +39,6 @@ jobs:
 
       - name: Plan
         run: terraform plan -input=false
+
+    env:
+      TF_VAR_alert_email: ${{secrets.ALERT_EMAIL }}

@@ -13,3 +13,7 @@ variable "project_name" {
   type        = string
   default     = "cloudscale-tf"
 }
+variable "alert_email" {
+  description = "email receiving alert"
+  type        = string
+}

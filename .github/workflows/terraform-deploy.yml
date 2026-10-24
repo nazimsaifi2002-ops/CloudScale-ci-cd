@@ -58,3 +58,5 @@ jobs:
       - name: Destroy
         if: ${{ inputs.action == 'destroy' }}
         run: terraform destroy -auto-approve -input=false
+    env:
+      TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
