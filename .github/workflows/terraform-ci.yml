@@ -38,7 +38,7 @@ jobs:
         run: terraform validate
 
       - name: Plan
-        run: terraform plan -input=false
+        run: terraform plan -input=false -lock=false
 
     env:
       TF_VAR_alert_email: ${{secrets.ALERT_EMAIL }}
