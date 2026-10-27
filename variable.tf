@@ -17,3 +17,8 @@ variable "alert_email" {
   description = "email receiving alert"
   type        = string
 }
+variable "image_tag" {
+  description = "unique image tag pushed by the pipeline "
+  type        = string
+  default     = "v1"
+}

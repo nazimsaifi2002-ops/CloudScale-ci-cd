@@ -43,7 +43,7 @@ resource "aws_launch_template" "web" {
     dnf install -y docker
     systemctl enable --now docker
     aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${split("/", aws_ecr_repository.app.repository_url)[0]}
-    docker run -d --restart always -p 80:5000 ${aws_ecr_repository.app.repository_url}:v1
+    docker run -d --restart always -p 80:5000 ${aws_ecr_repository.app.repository_url}:${var.image_tag}
   EOF
   )
 
