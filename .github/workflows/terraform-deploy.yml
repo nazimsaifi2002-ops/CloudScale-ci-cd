@@ -1,6 +1,12 @@
 name: terraform-deploy
 
 on:
+  push:
+  branches: [main]
+  paths:
+    -"app/**"
+    -"*.tf"
+    -"github/workflow/terraform-deploy.yml"
   workflow_dispatch:
     inputs:
       action:
@@ -14,6 +20,9 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: terraform-deploy
+  cancel-in-progress: false
 jobs:
   deploy:
     runs-on: ubuntu-24.04
@@ -37,22 +46,22 @@ jobs:
         run: terraform init -input=false
 
       - name: Create only the ECR repo
-        if: ${{ inputs.action == 'apply' }}
+        if: ${{ inputs.action != 'destroy' }}
         run: terraform apply -target=aws_ecr_repository.app -auto-approve -input=false
 
       - name: Log in to ECR
-        if: ${{ inputs.action == 'apply' }}
+        if: ${{ inputs.action != 'destroy' }}
         id: ecr
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push the image
-        if: ${{ inputs.action == 'apply' }}
+        if: ${{ inputs.action != 'destroy' }}
         run: |
           docker build -t ${{ steps.ecr.outputs.registry }}/cloudscale-app:${{ github.sha }} ./app
           docker push ${{ steps.ecr.outputs.registry }}/cloudscale-app:${{ github.sha }}
 
       - name: Apply everything
-        if: ${{ inputs.action == 'apply' }}
+        if: ${{ inputs.action != 'destroy' }}
         run: terraform apply -auto-approve -input=false
 
       - name: Destroy
