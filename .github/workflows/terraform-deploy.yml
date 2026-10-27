@@ -48,8 +48,8 @@ jobs:
       - name: Build and push the image
         if: ${{ inputs.action == 'apply' }}
         run: |
-          docker build -t ${{ steps.ecr.outputs.registry }}/cloudscale-app:v1 ./app
-          docker push ${{ steps.ecr.outputs.registry }}/cloudscale-app:v1
+          docker build -t ${{ steps.ecr.outputs.registry }}/cloudscale-app:${{ github.sha }} ./app
+          docker push ${{ steps.ecr.outputs.registry }}/cloudscale-app:${{ github.sha }}
 
       - name: Apply everything
         if: ${{ inputs.action == 'apply' }}
@@ -60,3 +60,4 @@ jobs:
         run: terraform destroy -auto-approve -input=false
     env:
       TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
+      TF_VAR_image_tag: ${{ github.sha }}
