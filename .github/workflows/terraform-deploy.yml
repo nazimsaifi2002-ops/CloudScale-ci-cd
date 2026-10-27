@@ -2,11 +2,12 @@ name: terraform-deploy
 
 on:
   push:
-  branches: [main]
-  paths:
-    -"app/**"
-    -"*.tf"
-    -"github/workflow/terraform-deploy.yml"
+    branches:
+      - main
+    paths:
+      - "app/**"
+      - "*.tf"
+      - ".github/workflows/terraform-deploy.yml"
   workflow_dispatch:
     inputs:
       action:
@@ -17,12 +18,13 @@ on:
           - destroy
         default: apply
 
-permissions:
-  contents: read
-
 concurrency:
   group: terraform-deploy
   cancel-in-progress: false
+
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-24.04
