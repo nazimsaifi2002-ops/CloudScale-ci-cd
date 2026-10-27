@@ -67,7 +67,7 @@ resource "aws_autoscaling_group" "web" {
 
   launch_template {
     id      = aws_launch_template.web.id
-    version = "aws_launch_template.web.latest.version"
+    version = aws_launch_template.web.latest_version
   }
   instance_refresh {
     strategy = "Rolling"
