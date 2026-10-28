@@ -62,6 +62,7 @@ jobs:
           docker build -t ${{ steps.ecr.outputs.registry }}/cloudscale-app:${{ github.sha }} ./app
           docker push ${{ steps.ecr.outputs.registry }}/cloudscale-app:${{ github.sha }}
 
+
       - name: Apply everything
         if: ${{ inputs.action != 'destroy' }}
         run: terraform apply -auto-approve -input=false
