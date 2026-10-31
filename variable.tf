@@ -22,3 +22,8 @@ variable "image_tag" {
   type        = string
   default     = "v1"
 }
+variable "grace_period" {
+  description = "seconds the Auto Scaling Group waits before health-checking a new server "
+  type        = number
+  default     = 300
+}
