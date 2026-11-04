@@ -5,8 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Third Version Hello from container  " + socket.gethostname()
-
+    return "health check test broken Version Hello from container  " + socket.gethostname(), 500
 @app.route("/burn")
 def burn():
     total=0
