@@ -26,7 +26,21 @@ permissions:
   contents: read
 
 jobs:
+  smoke-test:
+    if: ${{ inputs.action != 'destroy' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: get the code
+        uses: actions/checkout@v4
+
+      - name: taste test the app
+        working-directory: app
+        run: bash smoke-test.sh
+
+
   deploy:
+    needs: smoke-test
+    if: ${{ !cancelled() && (needs.smoke-test.result =='success' || needs.smoke-test.result == 'skipped') }}
     runs-on: ubuntu-24.04
     steps:
       - name: Get the code
